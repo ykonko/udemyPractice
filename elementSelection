@@ -1,0 +1,89 @@
+package introduction;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
+
+public class End2End {
+
+	public static void main(String[] args) throws InterruptedException {
+		
+		System.setProperty("webdriver.chrome.driver", "C:\\geckodriver\\chromedriver.exe");
+		WebDriver driver =new ChromeDriver();
+		driver.get("http://spicejet.com");
+		driver.manage().window().maximize();
+		
+		//Select One way radio button
+		WebElement oneWay = driver.findElement(By.id("ctl00_mainContent_rbtnl_Trip_0"));
+		WebElement roundTrip = driver.findElement(By.id("ctl00_mainContent_rbtnl_Trip_1"));
+		if (oneWay.isSelected())
+		{
+			Assert.assertTrue(true);
+		}
+		else
+		{
+			roundTrip.click();
+			Assert.assertTrue(true);
+		}
+		
+		//Enter departure city
+		WebElement departure = driver.findElement(By.id("ctl00_mainContent_ddl_originStation1_CTXT"));
+		departure.click();
+		departure.clear();
+		departure.sendKeys("Hyd");
+		
+		//Enter arrival city
+		WebElement arrival =driver.findElement
+				(By.xpath("//div[@id='glsctl00_mainContent_ddl_destinationStation1_CTNR'] //a[@value='MAA']"));
+		arrival.click();
+		Thread.sleep(2000L);
+		//Pick current date...today's date which is highlighted in the calendar
+		WebElement calendar = driver.findElement(By.cssSelector(".ui-datepicker-current-day"));
+		calendar.click();
+		
+		//Assert if the oneWay is selected the return calender is disabled
+		//WebElement returnDate = driver.findElement(By.id("ctl00_mainContent_view_date2"));
+		//returnDate.findElement(By.id("Div1")).getAttribute("style").contains("1");
+		String returnDate = driver.findElement(By.id("Div1")).getAttribute("style");
+			returnDate.contains("5");
+		
+		if (returnDate.equals(returnDate))
+		{
+			Assert.assertTrue(true);
+			System.out.println("One way is default");
+			
+		}
+		else
+		{
+			driver.findElement(By.id("Div1")).getAttribute("style").contains("1");
+			Assert.assertTrue(true);
+			System.out.println("Clicked on RoundTrip button");
+		}	
+		
+		WebElement passenger = driver.findElement(By.id("divpaxinfo"));
+		passenger.click();
+		Thread.sleep(2000L);
+		WebElement adults = driver.findElement(By.id("hrefIncAdt"));
+		System.out.println(adults.isEnabled() + " plus button is enabled");
+		for (int i=1;i<5;i++)
+		{
+			adults.click();
+		}
+		
+		WebElement doneAdults = driver.findElement(By.id("btnclosepaxoption"));
+		doneAdults.click();
+		
+		Select currency =new Select(driver.findElement(By.id("ctl00_mainContent_DropDownListCurrency")));
+		currency.selectByValue("USD");
+		
+		WebElement checkBox = driver.findElement(By.id("ctl00_mainContent_chk_IndArm"));
+		checkBox.click();
+		
+		WebElement search = driver.findElement(By.cssSelector("input[name='ctl00$mainContent$btn_FindFlights']"));
+		search.click();
+	}
+
+}
