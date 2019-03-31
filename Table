@@ -1,0 +1,53 @@
+package introduction;
+
+import static org.testng.Assert.assertTrue;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+
+public class Table {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		System.setProperty("webdriver.chrome.driver", "C:\\geckodriver\\chromedriver.exe");
+		WebDriver dr = new ChromeDriver();
+		String baseURL = "https://www.cricbuzz.com/live-cricket-scorecard/18970/pak-vs-sl-2nd-t20i-pakistan-v-sri-lanka-in-uae-2017";
+		dr.get(baseURL);
+		int sum = 0; // declare global variable
+		WebElement table = dr.findElement(By.cssSelector("div[class='cb-col cb-col-100 cb-ltst-wgt-hdr']"));// table
+		int countRow = table.findElements(By.cssSelector("div[class='cb-col cb-col-100 cb-scrd-itms']")).size();// row
+		// in that table move within the row to the 3rd column
+		int cellCount = table
+				.findElements(By.cssSelector("div[class='cb-col cb-col-100 cb-scrd-itms'] div:nth-child(3)")).size();
+		// System.out.println(cellText);
+
+		for (int i = 0; i < cellCount - 2; i++) { // -2 means count excluding last two rows
+			// traverse from parent to child(3d column
+			String value = table
+					.findElements(By.cssSelector("div[class='cb-col cb-col-100 cb-scrd-itms'] div:nth-child(3)")).get(i)
+					.getText();
+			int sumValue = Integer.parseInt(value); // changing string into integer
+
+			sum = sum + sumValue; // sum of values stores in the sum ---with each iteration 51+ 19=70 then 70 + 32
+									// = 102...
+		} // getting value through xpath text()
+		String extra = dr.findElement(By.xpath("//div[text()='Extras']//following-sibling::div")).getText();// travere from sibling to sibling
+		int extraNum = Integer.parseInt(extra);
+		int totalActual = sum + extraNum;
+		String totalExpect = dr.findElement(By.xpath("//div[text()='Total']//following-sibling::div")).getText();
+		int totalExpected = Integer.parseInt(totalExpect);
+		System.out.println(totalActual);
+
+		Assert.assertEquals(totalExpected, totalActual);
+		if (totalExpected == totalActual) {
+			System.out.println("Pass");
+		} else {
+			System.out.println("Fail");
+		}
+
+	}
+
+}
