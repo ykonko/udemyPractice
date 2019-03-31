@@ -1,0 +1,69 @@
+package introduction;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class Frames {
+
+	public static void main(String[] args) throws InterruptedException {
+
+		System.setProperty("webdriver.chrome.driver", "C:\\geckodriver\\chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.get("https://www.google.com/recaptcha/api2/demo");
+		driver.manage().window().maximize();
+
+		int count = findFrameNum(driver, By.xpath("//*[@id='recaptcha-anchor']/div[5]"));
+		driver.switchTo().frame(count);
+		// clicking on the checkBox
+		driver.findElement(By.xpath("//*[@id='recaptcha-anchor']/div[5]")).click();
+		driver.switchTo().defaultContent();
+
+		// clicking on the verify btn
+		int countBtn = findFrameNum(driver, By.xpath("//*[@id='recaptcha-verify-button']"));
+		driver.switchTo().frame(countBtn);
+		driver.findElement(By.xpath("//*[@id='recaptcha-verify-button']")).click();
+
+	}
+
+	public static int findFrameNum(WebDriver driver, By by) {
+		int i;
+		int countFrames = driver.findElements(by.tagName("iframe")).size();
+		System.out.println(countFrames);
+		for (i = 0; i < countFrames; i++) {
+			driver.switchTo().frame(i);
+			int elCount = driver.findElements(by).size();
+
+			if (elCount > 0) {
+				break;
+			} else {
+				System.out.println("Continue");
+			}
+
+			driver.switchTo().defaultContent();
+		}
+		driver.switchTo().defaultContent();
+		return i;
+	}
+}
+
+/*
+ * public static int findFrameNum(WebDriver driver, By by) { // passing
+ * WebDriver so we can us it in the class, passing By by // returning int int i;
+ * // declare global i int countFrames =
+ * driver.findElements(by.tagName("iframe")).size();// counting iframes in the
+ * page for (i = 0; i < countFrames; i++) { // looping through the count
+ * driver.switchTo().frame(i); // switching while looping through int elCount =
+ * driver.findElements(by.className("recaptcha-checkbox-checkmark")).size();//
+ * getting count of // the element we // are looking for // in the iframe, if
+ * (elCount > 0) { // so if count>o then element is present and we want to click
+ * on it
+ * driver.findElement(by.className("recaptcha-checkbox-checkmark")).click(); //
+ * click on element if // condition is true break;// stop once found and clicked
+ * } } driver.switchTo().defaultContent(); // switched to the main
+ * window/content return i; // returning i to see what we clicked on
+ * 
+ * }
+ * 
+ * }
+ */
