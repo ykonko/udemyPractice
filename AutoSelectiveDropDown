@@ -1,0 +1,53 @@
+package introduction;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class autoSelectiveDropDownJavaScript {
+
+	public static void main(String[] args) {
+		System.setProperty("webdriver.chrome.driver", "C:\\geckodriver\\chromedriver.exe");
+		WebDriver dr = new ChromeDriver();
+		dr.get("https://www.ksrtc.in");
+
+		dr.findElement(By.id("fromPlaceName")).sendKeys("BENG");
+		dr.findElement(By.id("fromPlaceName")).sendKeys(Keys.DOWN);
+		//dr.findElement(By.id("fromPlaceName")).sendKeys(Keys.ENTER);to choose BENGULURU-first option
+		
+
+		JavascriptExecutor js = (JavascriptExecutor) dr; // import Javascript executor libraries
+
+		// "return" retrieve the value of the element and store it in the string script
+		String script = "return document.getElementById(\"fromPlaceName\").value;"; // Use forward slash cos double
+		String text = (String) js.executeScript(script);// create String obj to store the value // quotes not acceptable
+														// in Java
+		System.out.println(text);
+
+		int i = 0; // in case text is not equal the string we can put the loop for ex 10 runs and
+					// after that stop it and print message
+		while (!text.equalsIgnoreCase("BENGALURU")) {
+			i++;
+			dr.findElement(By.id("fromPlaceName")).sendKeys(Keys.DOWN);
+			text = (String) js.executeScript(script);
+			System.out.println(text +i);
+			if (i > 10) {
+				break;
+			}
+		}
+		if (i > 10) {
+			System.out.println("Element is not found" );
+
+		} else {
+			System.out.println("Element is found:" + text);
+			dr.findElement(By.id("fromPlaceName")).sendKeys(Keys.ENTER);
+		}
+	}
+
+}
+
+// while loop will execute the loop if condition is true...exit's the loop if
+// it's false
